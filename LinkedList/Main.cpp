@@ -26,5 +26,15 @@ int main() {
         }
     std::cout << "--- END OF LIST (Total: " << count << " nodes) ---" << std::endl;
 
+    std::cout << "Action menu:" << std::endl;
+    std::cout << "\t 1. Add a new resident" << std::endl;
+    std::cout << "\t 2. Remove a resident" << std::endl;
+    std::cout << "\t 3. Search for a resident" << std::endl;
+    std::cout << "\t 4. Display all residents" << std::endl;
+    std::cout << "\t 5. Exit" << std::endl;
+    std::cout << "Please select an option: " << std::endl;
+    int choice;
+    std::cin >> choice;
+
     return 0;
 }
