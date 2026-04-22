@@ -34,7 +34,7 @@ int main() {
         std::cout << "\t 1. Show data summary" << std::endl;
         std::cout << "\t 2. Sort residents" << std::endl;
         std::cout << "\t 3. Search for a resident" << std::endl;
-        std::cout << "\t 4. Display all residents" << std::endl;
+        std::cout << "\t 4. Dataset insight" << std::endl;
         std::cout << "\t 5. Exit" << std::endl;
         std::cout << "Please select an option: ";
         int choice;

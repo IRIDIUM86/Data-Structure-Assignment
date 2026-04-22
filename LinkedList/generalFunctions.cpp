@@ -39,7 +39,7 @@ std::string getSummaryData (Residents* head, AgeGroupStats group[]) {
         int idx = getGroupIndex(temp->ageGroup);
 
         if (idx != -1) {  // Only process if age group is valid
-            double emissions = temp->dailyDistance * temp->carbonEmissionFactor;
+            double emissions = temp->dailyDistance * temp->carbonEmissionFactor * temp->averageDayPerMonth; // Total weekly emissions for this resident
             group[idx].residentCount++;
             group[idx].totalEmissions += emissions;
 
@@ -195,14 +195,14 @@ void displaySortMenu(Residents** headRef) {
 
         mergeSort(headRef, target);
         std::cout << "\n--- LIST SORTED BY " << target << " ---" << std::endl;
-        std::cout << "ID | Age | Transport | Distance | Emission Factor | Age Group" << std::endl;
+        std::cout << "ID \t| Age \t| Transport \t| Distance \t| Emission Factor \t| Age Group" << std::endl;
         Residents* temp = *headRef;
         while (temp != nullptr) {
-            std::cout << temp->residentID << " | " 
-                      << temp->age << " | "
-                      << temp->modeOfTransport << " | "
-                      << temp->dailyDistance << " | "
-                      << temp->carbonEmissionFactor << " | "
+            std::cout << temp->residentID << " \t| " 
+                      << temp->age << " \t| "
+                      << temp->modeOfTransport << " \t| "
+                      << temp->dailyDistance << " \t\t| "
+                      << temp->carbonEmissionFactor << " \t| "
                       << temp->ageGroup << std::endl;
             temp = temp->next;
         }
