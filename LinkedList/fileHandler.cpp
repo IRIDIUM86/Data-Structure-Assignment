@@ -20,7 +20,7 @@ Residents* loadDataSet(std::string fileName, Residents* head) {
 
     while (std::getline(readingFile, line)) {
             std::stringstream ss(line);
-            std::string id, ageStr, mode, distStr, factorStr, daysStr;
+            std::string id, ageStr, mode, distStr, factorStr, daysStr, ageGroup; // Temporary variables to hold the extracted data
 
             // Extract each column using the comma as a delimiter
             std::getline(ss, id, ',');
@@ -37,8 +37,10 @@ Residents* loadDataSet(std::string fileName, Residents* head) {
             float factor = std::stof(factorStr);
             int days = std::stoi(daysStr);
 
+            ageGroup = ageGrouping(std::stoi(ageStr)); // Call the age grouping function to verify it works
+
             // Update the head of the list using your existing function
-            head = addResidents(head, id, age, mode, dist, factor, days);
+            head = addResidents(head, id, age, mode, dist, factor, days, ageGroup);
         }
 
         readingFile.close();
