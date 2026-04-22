@@ -34,4 +34,6 @@ Residents* addResidents(Residents* head, std::string id, int age, std::string tr
 
 std::string ageGrouping(int age);
 
+
+
 #endif // 3. End of the guard

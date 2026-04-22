@@ -32,7 +32,7 @@ int main() {
     while (exitProgram == false) {
         std::cout << "\n Action menu:" << std::endl;
         std::cout << "\t 1. Show data summary" << std::endl;
-        std::cout << "\t 2. Remove a resident" << std::endl;
+        std::cout << "\t 2. Sort residents" << std::endl;
         std::cout << "\t 3. Search for a resident" << std::endl;
         std::cout << "\t 4. Display all residents" << std::endl;
         std::cout << "\t 5. Exit" << std::endl;
@@ -42,6 +42,9 @@ int main() {
 
         if (choice == 1) {
             displaySummary(head);
+        }
+        else if (choice == 2){
+            displaySortMenu(&head);
         }
         else if (choice == 5) {
             exitProgram = true;
