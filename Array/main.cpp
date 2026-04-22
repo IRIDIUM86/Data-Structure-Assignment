@@ -4,8 +4,8 @@
 #include "arrayHandler.hpp"
 #include "AgeGroupCategorized.hpp"
 
-extern UserData userArray[maxRows]; 
-extern int currentCount;
+extern UserData dataTable[maxRows]; 
+extern int currentRow;
 
 const int AGE_GROUP_COUNT = 5;
 
@@ -15,10 +15,10 @@ int main(){
     loadDataSet("../Datasets/dataset3-cityC.csv");
     displayData();
 
-    // AgeGroupStats groups[AGE_GROUP_COUNT];
-    // categorizeByAge(userArray, currentCount, groups);
-    // std::cout << "\n--- CARBON EMISSION ANALYSIS BY AGE GROUP ---\n";
-    // displayResults(groups);
+    AgeGroupStats groups[AGE_GROUP_COUNT];
+    categorizeByAge(dataTable, currentRow, groups);
+    std::cout << "\n--- CARBON EMISSION ANALYSIS BY AGE GROUP ---\n";
+    displayResults(groups);
 
     return 0;
 };
