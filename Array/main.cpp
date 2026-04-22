@@ -13,12 +13,12 @@ int main(){
     loadDataSet("../Datasets/dataset1-cityA.csv");
     loadDataSet("../Datasets/dataset2-cityB.csv");
     loadDataSet("../Datasets/dataset3-cityC.csv");
-//    displayData();
+    displayData();
 
-    AgeGroupStats groups[AGE_GROUP_COUNT];
-    categorizeByAge(userArray, currentCount, groups);
-    std::cout << "\n--- CARBON EMISSION ANALYSIS BY AGE GROUP ---\n";
-    displayResults(groups);
+    // AgeGroupStats groups[AGE_GROUP_COUNT];
+    // categorizeByAge(userArray, currentCount, groups);
+    // std::cout << "\n--- CARBON EMISSION ANALYSIS BY AGE GROUP ---\n";
+    // displayResults(groups);
 
     return 0;
 };
