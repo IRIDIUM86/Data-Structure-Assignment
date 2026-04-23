@@ -46,6 +46,9 @@ int main() {
         else if (choice == 2){
             displaySortMenu(&head);
         }
+        else if (choice == 3) {
+            searchMenu(head);
+        }
         else if (choice == 5) {
             exitProgram = true;
         }

@@ -2,6 +2,7 @@
 #include <string>
 #include <cstdio>
 #include "generalFunctions.hpp"
+#include <limits>
 
 AgeGroupStats group[5];
 
@@ -209,4 +210,151 @@ void displaySortMenu(Residents** headRef) {
         
         std::cout << "Data sorted successfully!" << std::endl;
     }
+}
+
+Residents* searchMenu(Residents* head) {
+    std::cout << "\n--- SEARCH OPTIONS ---" << std::endl;
+    std::cout << "\t 1. Search by Resident ID" << std::endl;
+    std::cout << "\t 2. Search by Mode of transport" << std::endl;
+    std::cout << "\t 3. Search by Age Group" << std::endl;
+    std::cout << "\t 4. Search by Carbon Emission" << std::endl;
+    std::cout << "\t 5. Search by Daily Distance" << std::endl;
+    std::cout << "\t 6. Return to Main Menu" << std::endl;
+    std::cout << "Selection: ";
+    
+    int choiceSearch;
+    std::cin >> choiceSearch;
+
+    if (choiceSearch == 1) {
+        std::string id;
+        std::cout << "Enter Resident ID: ";
+        std::cin >> id;
+        
+        Residents* temp = head;
+
+        bool found = false;
+        while (temp != nullptr) {
+            if (temp->residentID == id) {
+                std::cout << "Resident Found: " << temp->residentID << " | Age: " << temp->age 
+                          << " | Transport: " << temp->modeOfTransport 
+                          << " | Distance: " << temp->dailyDistance 
+                          << " | Emission Factor: " << temp->carbonEmissionFactor 
+                          << " | Age Group: " << temp->ageGroup << std::endl;
+                found = true;
+                break;
+            }
+            temp = temp->next;
+        }
+        if (!found) {
+            std::cout << "Resident with ID '" << id << "' not found." << std::endl;
+        }
+    } else if (choiceSearch == 2) {
+        std::string transport;
+        std::cout << "Enter Mode of Transport (Car, Bus, Bicycle, Walking, School Bus, Carpool): ";
+        std::cin >> transport;
+
+        Residents* temp = head;
+        bool found = false;
+        while (temp != nullptr) {
+            if (temp->modeOfTransport == transport) {
+                std::cout << "Resident Found: " << temp->residentID << " | Age: " << temp->age 
+                          << " | Transport: " << temp->modeOfTransport 
+                          << " | Distance: " << temp->dailyDistance 
+                          << " | Emission Factor: " << temp->carbonEmissionFactor 
+                          << " | Age Group: " << temp->ageGroup << std::endl;
+                found = true;
+            }
+            temp = temp->next;
+        }
+        if (!found) {
+            std::cout << "No residents found using '" << transport << "'." << std::endl;
+        }
+    } else if (choiceSearch == 3) {
+        std::string ageGroup;
+        std::cout << "Enter Age Group (Children & Teenagers, University Students / Young Adults, Working Adults (Early Career), Working Adults (Late Career), Senior Citizens): ";
+        std::cin.ignore(); // Clear newline from previous input
+        std::getline(std::cin, ageGroup);
+
+        Residents* temp = head;
+        bool found = false;
+        while (temp != nullptr) {
+            if (temp->ageGroup == ageGroup) {
+                std::cout << "Resident Found: " << temp->residentID << " | Age: " << temp->age 
+                          << " | Transport: " << temp->modeOfTransport 
+                          << " | Distance: " << temp->dailyDistance 
+                          << " | Emission Factor: " << temp->carbonEmissionFactor 
+                          << " | Age Group: " << temp->ageGroup << std::endl;
+                found = true;
+            }
+            temp = temp->next;
+        }
+        if (!found) {
+            std::cout << "No residents found in age group '" << ageGroup << "'." << std::endl;
+        }
+    } else if (choiceSearch == 4) {
+        std::cout << "Enter Carbon Emission Factor (kg CO2 per km): ";
+        float emissionFactor;
+        if (!(std::cin >> emissionFactor)) {
+            // Handle invalid non-numeric input
+            std::cin.clear(); 
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        } else {
+            // Clear the leftover '\n' from the emission factor input
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+
+        Residents* temp = head;
+        bool found = false;
+        while (temp != nullptr) {
+            if (temp->carbonEmissionFactor == emissionFactor) {
+                std::cout << "Resident Found: " << temp->residentID << " | Age: " << temp->age 
+                          << " | Transport: " << temp->modeOfTransport 
+                          << " | Distance: " << temp->dailyDistance 
+                          << " | Emission Factor: " << temp->carbonEmissionFactor 
+                          << " | Age Group: " << temp->ageGroup << std::endl;
+                found = true;
+            }
+            temp = temp->next;
+        }
+        if (!found) {
+            std::cout << "No residents found with carbon emission factor '" << emissionFactor << "'." << std::endl;
+        }
+    } else if (choiceSearch == 5) {
+        try {
+            std::cout << "Enter Daily Distance (km): ";
+            float dailyDistance;
+                if (!(std::cin >> dailyDistance)) {
+                    // Handle invalid non-numeric input
+                    std::cin.clear(); 
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                } else {
+                    // Clear the leftover '\n' from the age input
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                }
+
+            Residents* temp = head;
+            bool found = false;
+            while (temp != nullptr) {
+                if (temp->dailyDistance == dailyDistance) {
+                    std::cout << "Resident Found: " << temp->residentID << " | Age: " << temp->age 
+                            << " | Transport: " << temp->modeOfTransport 
+                            << " | Distance: " << temp->dailyDistance 
+                            << " | Emission Factor: " << temp->carbonEmissionFactor 
+                            << " | Age Group: " << temp->ageGroup << std::endl;
+                    found = true;
+                }
+                temp = temp->next;
+            }
+            if (!found) {
+                std::cout << "No residents found with daily distance '" << dailyDistance << "'." << std::endl;
+            }
+        } catch (const std::exception& e) {
+            std::cout << "Invalid input for daily distance. Please enter a numeric value." << std::endl;
+            std::cin.clear(); // Set to an invalid value to prevent accidental matches
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore the rest of the line
+        }
+    } else {
+        std::cout << "Invalid choice, please enter a valid option." << std::endl;
+    }
+    return head;
 }
