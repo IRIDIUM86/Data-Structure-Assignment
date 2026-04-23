@@ -40,11 +40,14 @@ int main() {
         else if (choice == 3) {
             searchMenu(head);
         }
+        else if (choice == 4) {
+            displayInsight(head);
+        }
         else if (choice == 5) {
             exitProgram = true;
         }
          else {
-            std::cout << "Option not implemented yet. Please select another option." << std::endl;
+            std::cout << "Invalid choice. Please select a valid option." << std::endl;
          }
     }
 

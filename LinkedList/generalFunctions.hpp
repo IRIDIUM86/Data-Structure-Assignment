@@ -11,11 +11,20 @@ struct AgeGroupStats {
     double emissionCounts[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 };
 
+    struct DatasetAgeStats {
+        int residentCount = 0;
+        double totalEmissions = 0.0;
+        int transportCounts[6] = {0, 0, 0, 0, 0, 0};
+        double emissionCounts[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    };
+
 extern AgeGroupStats group[5];
 
 void displaySummary(Residents* head);
 int getGroupIndex(std::string category);
 std::string getSummaryData (Residents* head, AgeGroupStats group[]);
-
+void printTransparencyReport(int residentCount, int stackFrames, std::string algoName);
 void displaySortMenu(Residents** headRef);
+void displayInsight(Residents* head);
+
 #endif

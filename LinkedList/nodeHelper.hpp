@@ -1,7 +1,9 @@
-#ifndef NODEHELPER_HPP  // 1. Check if this "key" exists
-#define NODEHELPER_HPP  // 2. If not, create the "key" and read the file
+#ifndef NODEHELPER_HPP
+#define NODEHELPER_HPP
 
 #include <string>
+
+extern int currentMaxStackDepth;
 
 struct Residents {
     // Data fields 
@@ -35,5 +37,13 @@ Residents* addResidents(Residents* head, std::string id, int age, std::string tr
 std::string ageGrouping(int age);
 
 Residents* searchMenu(Residents* head);
+
+int countResidents(Residents* head);
+
+Residents* getMiddle(Residents* head);
+
+Residents* sortedMerge(Residents* a, Residents* b, std::string target);
+
+void mergeSort(Residents** headRef, std::string target, int currentDepth = 1);
 
 #endif // 3. End of the guard
