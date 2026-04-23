@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 #include "nodeHelper.hpp"
 #include "fileHandler.hpp"
 #include "generalFunctions.hpp"
@@ -7,25 +8,15 @@ int main() {
 
     Residents* head = nullptr;
 
+    std::cout << "--- LOADING DATASETS ---" << std::endl;
+
+    auto start = std::chrono::high_resolution_clock::now();
     head = loadDataSet("../Datasets/dataset1-cityA.csv", head);
     head = loadDataSet("../Datasets/dataset2-cityB.csv", head);
     head = loadDataSet("../Datasets/dataset3-cityC.csv", head);
-
-    // 3. Simple verification
-    std::cout << "\n--- VERIFYING LINKED LIST DATA ---" << std::endl;
-        Residents* temp = head;
-        int count = 0;
-
-        while (temp != nullptr) {
-            count++;
-            std::cout << "Node [" << count << "] ID: " << temp->residentID 
-                      << " | Age: " << temp->age 
-                      << " | Transport: " << temp->modeOfTransport
-                      << " | Age Group: " << temp->ageGroup << std::endl;
-            
-            temp = temp->next; // Move to the next node
-        }
-    std::cout << "--- END OF LIST (Total: " << count << " nodes) ---" << std::endl;
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> duration = end - start; 
+    std::cout << "Execution Time: " << duration.count() << " ms" << std::endl;
 
     bool exitProgram = false;
 

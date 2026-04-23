@@ -3,6 +3,7 @@
 #include <cstdio>
 #include "generalFunctions.hpp"
 #include <limits>
+#include <chrono>
 
 AgeGroupStats group[5];
 
@@ -194,7 +195,11 @@ void displaySortMenu(Residents** headRef) {
             std::cout << "Invalid choice, returning to main menu." << std::endl;
         }
 
+        auto start = std::chrono::high_resolution_clock::now();
         mergeSort(headRef, target);
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double, std::milli> duration = end - start;
+        std::cout << "Execution Time: " << duration.count() << " ms" << std::endl;
         std::cout << "\n--- LIST SORTED BY " << target << " ---" << std::endl;
         std::cout << "ID \t| Age \t| Transport \t| Distance \t| Emission Factor \t| Age Group" << std::endl;
         Residents* temp = *headRef;
@@ -232,6 +237,7 @@ Residents* searchMenu(Residents* head) {
         
         Residents* temp = head;
 
+        auto start = std::chrono::high_resolution_clock::now();
         bool found = false;
         while (temp != nullptr) {
             if (temp->residentID == id) {
@@ -245,6 +251,9 @@ Residents* searchMenu(Residents* head) {
             }
             temp = temp->next;
         }
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double, std::milli> duration = end - start;
+        std::cout << "Execution Time: " << duration.count() << " ms" << std::endl;
         if (!found) {
             std::cout << "Resident with ID '" << id << "' not found." << std::endl;
         }
@@ -255,6 +264,7 @@ Residents* searchMenu(Residents* head) {
 
         Residents* temp = head;
         bool found = false;
+        auto start = std::chrono::high_resolution_clock::now();
         while (temp != nullptr) {
             if (temp->modeOfTransport == transport) {
                 std::cout << "Resident Found: " << temp->residentID << " | Age: " << temp->age 
@@ -266,6 +276,9 @@ Residents* searchMenu(Residents* head) {
             }
             temp = temp->next;
         }
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double, std::milli> duration = end - start;
+        std::cout << "Execution Time: " << duration.count() << " ms" << std::endl;
         if (!found) {
             std::cout << "No residents found using '" << transport << "'." << std::endl;
         }
@@ -277,6 +290,7 @@ Residents* searchMenu(Residents* head) {
 
         Residents* temp = head;
         bool found = false;
+        auto start = std::chrono::high_resolution_clock::now();
         while (temp != nullptr) {
             if (temp->ageGroup == ageGroup) {
                 std::cout << "Resident Found: " << temp->residentID << " | Age: " << temp->age 
@@ -288,6 +302,9 @@ Residents* searchMenu(Residents* head) {
             }
             temp = temp->next;
         }
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double, std::milli> duration = end - start;
+        std::cout << "Execution Time: " << duration.count() << " ms" << std::endl;
         if (!found) {
             std::cout << "No residents found in age group '" << ageGroup << "'." << std::endl;
         }
@@ -298,6 +315,8 @@ Residents* searchMenu(Residents* head) {
             // Handle invalid non-numeric input
             std::cin.clear(); 
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Invalid input for carbon emission factor. Please enter a numeric value." << std::endl;
+             return head; // Return early to avoid searching with an invalid value
         } else {
             // Clear the leftover '\n' from the emission factor input
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -305,6 +324,7 @@ Residents* searchMenu(Residents* head) {
 
         Residents* temp = head;
         bool found = false;
+        auto start = std::chrono::high_resolution_clock::now();
         while (temp != nullptr) {
             if (temp->carbonEmissionFactor == emissionFactor) {
                 std::cout << "Resident Found: " << temp->residentID << " | Age: " << temp->age 
@@ -316,6 +336,9 @@ Residents* searchMenu(Residents* head) {
             }
             temp = temp->next;
         }
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double, std::milli> duration = end - start;
+        std::cout << "Execution Time: " << duration.count() << " ms" << std::endl;
         if (!found) {
             std::cout << "No residents found with carbon emission factor '" << emissionFactor << "'." << std::endl;
         }
@@ -327,6 +350,8 @@ Residents* searchMenu(Residents* head) {
                     // Handle invalid non-numeric input
                     std::cin.clear(); 
                     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    std::cout << "Invalid input for daily distance. Please enter a numeric value." << std::endl;
+                    return head; // Return early to avoid searching with an invalid value
                 } else {
                     // Clear the leftover '\n' from the age input
                     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -334,6 +359,7 @@ Residents* searchMenu(Residents* head) {
 
             Residents* temp = head;
             bool found = false;
+            auto start = std::chrono::high_resolution_clock::now();
             while (temp != nullptr) {
                 if (temp->dailyDistance == dailyDistance) {
                     std::cout << "Resident Found: " << temp->residentID << " | Age: " << temp->age 
@@ -345,6 +371,9 @@ Residents* searchMenu(Residents* head) {
                 }
                 temp = temp->next;
             }
+            auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double, std::milli> duration = end - start;
+            std::cout << "Execution Time: " << duration.count() << " ms" << std::endl;
             if (!found) {
                 std::cout << "No residents found with daily distance '" << dailyDistance << "'." << std::endl;
             }
