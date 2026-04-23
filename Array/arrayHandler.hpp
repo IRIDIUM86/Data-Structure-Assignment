@@ -21,5 +21,10 @@ void displayData();
 float totalEmission();
 void emissionByTransport();
 void analyzeAgeGroup(int minAge, int maxAge, std::string groupName);
+void sortUserData(int criteria);
+void getActualMemoryUsage();
+void searchByTransport(std::string targetMode);
+void searchByDistance(int threshold);
+int binarySearchAge(int targetAge);
 
 #endif

@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <windows.h>
+#include <psapi.h>
 #include "arrayHandler.hpp"
 
 // Define the variables here
@@ -135,4 +137,76 @@ void analyzeAgeGroup(int minAge, int maxAge, std::string groupName) {
 
     std::cout << "-------------------------------------------------------------" << std::endl;
     std::cout << "Total Emission for Age Group: " << totalGroupEmission << " kg CO2" << std::endl;
+}
+
+void sortUserData(int criteria) {
+    for (int i = 0; i < currentRow - 1; i++) {
+        for (int j = 0; j < currentRow - i - 1; j++) {
+            bool swapNeeded = false;
+
+            // Calculate emission for comparison if needed
+            double emissionJ = dataTable[j].distance * dataTable[j].emissionFactor * dataTable[j].days;
+            double emissionJ1 = dataTable[j+1].distance * dataTable[j+1].emissionFactor * dataTable[j+1].days;
+
+            if (criteria == 1) { // Sort by Age
+                if (dataTable[j].age > dataTable[j + 1].age) swapNeeded = true;
+            } 
+            else if (criteria == 2) { // Sort by Daily Distance
+                if (dataTable[j].distance > dataTable[j + 1].distance) swapNeeded = true;
+            } 
+            else if (criteria == 3) { // Sort by Carbon Emission
+                if (emissionJ > emissionJ1) swapNeeded = true;
+            }
+
+            if (swapNeeded) {
+                // Manual swap since STL <utility> might be restricted
+                UserData temp = dataTable[j];
+                dataTable[j] = dataTable[j + 1];
+                dataTable[j + 1] = temp;
+            }
+        }
+    }
+}
+
+void getActualMemoryUsage() {
+    PROCESS_MEMORY_COUNTERS memCounter;
+    if (GetProcessMemoryInfo(GetCurrentProcess(), &memCounter, sizeof(memCounter))) {
+        std::cout << "Actual RAM Usage: " << memCounter.WorkingSetSize / 1024 << " KB" << std::endl;
+    }
+}
+
+// Search by Mode of Transport (e.g., "Car") [cite: 106]
+void searchByTransport(std::string targetMode) {
+    bool found = false;
+    std::cout << "Residents using " << targetMode << ":" << std::endl;
+    
+    for (int i = 0; i < currentRow; i++) {
+        if (dataTable[i].transport == targetMode) {
+            std::cout << "ID: " << dataTable[i].id << " | Age: " << dataTable[i].age << std::endl;
+            found = true;
+        }
+    }
+    if (!found) std::cout << "No residents found using this mode." << std::endl;
+}
+
+// Search by Distance Threshold (e.g., > 15km) [cite: 107]
+void searchByDistance(int threshold) {
+    std::cout << "Residents traveling more than " << threshold << " km:" << std::endl;
+    for (int i = 0; i < currentRow; i++) {
+        if (dataTable[i].distance > threshold) {
+            std::cout << "ID: " << dataTable[i].id << " | Distance: " << dataTable[i].distance << " km" << std::endl;
+        }
+    }
+}
+
+// Prerequisite: dataTable must be sorted by Age
+int binarySearchAge(int targetAge) {
+    int low = 0, high = currentRow - 1;
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+        if (dataTable[mid].age == targetAge) return mid;
+        if (dataTable[mid].age < targetAge) low = mid + 1;
+        else high = mid - 1;
+    }
+    return -1; // Not found
 }
