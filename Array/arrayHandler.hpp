@@ -16,6 +16,9 @@ struct UserData {
 const int maxRows = 525;
 const int maxColumns = 6;
 
+extern UserData userData[maxRows];
+extern int dataCount;
+
 void addArray(std::string id, int age, std::string transport, int distance, float emissionFactor, int days);
 void displayData();
 float totalEmission();
