@@ -19,6 +19,7 @@ extern AgeGroupStats group[5];
 void displaySummary(int size);
 int getGroupIndex(int age);
 std::string getSummaryData(int size, AgeGroupStats group[]);
+void displayDetailedInsight(int size);
 
 void displaySortMenu(int& size);
 void quickSort(int low, int high, std::string target);

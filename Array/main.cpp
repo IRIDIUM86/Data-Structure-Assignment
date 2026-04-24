@@ -74,16 +74,7 @@ int main() {
             }
         }
         else if (choice == 4) {
-            std::cout << "\n--- DATASET INSIGHT ---" << std::endl;
-            std::cout << "Total Emission: " << totalEmission() << " kg CO2" << std::endl;
-            emissionByTransport();
-            
-            std::cout << "\nAnalyzing by Age Groups..." << std::endl;
-            analyzeAgeGroup(0, 17, "0-17 (Children & Teenagers)");
-            analyzeAgeGroup(18, 25, "18-25 (University Students / Young Adults)");
-            analyzeAgeGroup(26, 45, "26-45 (Working Adults - Early Career)");
-            analyzeAgeGroup(46, 60, "46-60 (Working Adults - Late Career)");
-            analyzeAgeGroup(61, 100, "61-100 (Senior Citizens / Retirees)");
+            displayDetailedInsight(size);
         }
         else if (choice == 5) {
             exitProgram = true;
