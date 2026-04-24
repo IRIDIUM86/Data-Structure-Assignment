@@ -5,18 +5,18 @@
 #include "arrayHandler.hpp"
 
 // Define the variables here
-UserData dataTable[maxRows];
+UserData userData[maxRows];
 int currentRow = 0;
 
 void addArray(std::string id, int age, std::string transport, int distance, float emissionFactor, int days){
     if (currentRow < maxRows) {
-        dataTable[currentRow].id = id;
-        dataTable[currentRow].age = age;
-        dataTable[currentRow].transport = transport;
-        dataTable[currentRow].distance = distance;
-        dataTable[currentRow].emissionFactor = emissionFactor;
-        dataTable[currentRow].days = days;
-        dataTable[currentRow].emission = distance * emissionFactor * days;
+        userData[currentRow].id = id;
+        userData[currentRow].age = age;
+        userData[currentRow].transport = transport;
+        userData[currentRow].distance = distance;
+        userData[currentRow].emissionFactor = emissionFactor;
+        userData[currentRow].days = days;
+        userData[currentRow].emission = distance * emissionFactor * days;
         currentRow++;
     } else {
         std::cerr << "Error: Maximum row limit reached!" << std::endl;
@@ -29,13 +29,13 @@ void displayData() {
     std::cout << "========================================================" << std::endl;
 
     for (int i = 0; i < currentRow; i++) {
-        std::cout << dataTable[i].id << "\t"
-                  << dataTable[i].age << "\t"
-                  << dataTable[i].transport << "\t\t"
-                  << dataTable[i].distance << "\t\t"
-                  << dataTable[i].emissionFactor << "\t"
-                  << dataTable[i].days << "\t"
-                  << dataTable[i].emission
+        std::cout << userData[i].id << "\t"
+                  << userData[i].age << "\t"
+                  << userData[i].transport << "\t\t"
+                  << userData[i].distance << "\t\t"
+                  << userData[i].emissionFactor << "\t"
+                  << userData[i].days << "\t"
+                  << userData[i].emission
                   << std::endl;
     }
 
@@ -49,7 +49,7 @@ void displayData() {
 float totalEmission() {
     float total = 0;
     for (int i = 0; i < currentRow; i++) {
-        total += dataTable[i].emission;
+        total += userData[i].emission;
     }
     return total;
 }
@@ -58,18 +58,18 @@ void emissionByTransport() {
     float car = 0, bus = 0, bicycle = 0, walking = 0, carpool = 0, schoolBus = 0;
 
     for (int i = 0; i < currentRow; i++) {
-        if (dataTable[i].transport == "Car")
-            car += dataTable[i].emission;
-        else if (dataTable[i].transport == "Bus")
-            bus += dataTable[i].emission;
-        else if (dataTable[i].transport == "Bicycle")
-            bicycle += dataTable[i].emission;
-        else if (dataTable[i].transport == "Walking")
-            walking += dataTable[i].emission;
-        else if (dataTable[i].transport == "Carpool")
-            carpool += dataTable[i].emission;
-        else if (dataTable[i].transport == "School Bus")
-            schoolBus += dataTable[i].emission;
+        if (userData[i].transport == "Car")
+            car += userData[i].emission;
+        else if (userData[i].transport == "Bus")
+            bus += userData[i].emission;
+        else if (userData[i].transport == "Bicycle")
+            bicycle += userData[i].emission;
+        else if (userData[i].transport == "Walking")
+            walking += userData[i].emission;
+        else if (userData[i].transport == "Carpool")
+            carpool += userData[i].emission;
+        else if (userData[i].transport == "School Bus")
+            schoolBus += userData[i].emission;
     }
 
     std::cout << "\n========================================" << std::endl;
@@ -88,30 +88,30 @@ void analyzeAgeGroup(int minAge, int maxAge, std::string groupName) {
     float bicycleEmission = 0, walkingEmission = 0, busEmission = 0, carEmission = 0, carpoolEmission = 0, schoolBusEmission = 0;
 
     for (int i = 0; i < currentRow; i++) {
-        if (dataTable[i].age >= minAge && dataTable[i].age <= maxAge) {
-            if (dataTable[i].transport == "Bicycle") {
+        if (userData[i].age >= minAge && userData[i].age <= maxAge) {
+            if (userData[i].transport == "Bicycle") {
                 bicycleCount++;
-                bicycleEmission += dataTable[i].emission;
+                bicycleEmission += userData[i].emission;
             }
-            else if (dataTable[i].transport == "Walking") {
+            else if (userData[i].transport == "Walking") {
                 walkingCount++;
-                walkingEmission += dataTable[i].emission;
+                walkingEmission += userData[i].emission;
             }
-            else if (dataTable[i].transport == "Bus") {
+            else if (userData[i].transport == "Bus") {
                 busCount++;
-                busEmission += dataTable[i].emission;
+                busEmission += userData[i].emission;
             }
-            else if (dataTable[i].transport == "Car") {
+            else if (userData[i].transport == "Car") {
                 carCount++;
-                carEmission += dataTable[i].emission;
+                carEmission += userData[i].emission;
             }
-            else if (dataTable[i].transport == "Carpool") {
+            else if (userData[i].transport == "Carpool") {
                 carpoolCount++;
-                carpoolEmission += dataTable[i].emission;
+                carpoolEmission += userData[i].emission;
             }
-            else if (dataTable[i].transport == "School Bus") {
+            else if (userData[i].transport == "School Bus") {
                 schoolBusCount++;
-                schoolBusEmission += dataTable[i].emission;
+                schoolBusEmission += userData[i].emission;
             }
         }
     }
@@ -145,14 +145,14 @@ void sortUserData(int criteria) {
             bool swapNeeded = false;
 
             // Calculate emission for comparison if needed
-            double emissionJ = dataTable[j].distance * dataTable[j].emissionFactor * dataTable[j].days;
-            double emissionJ1 = dataTable[j+1].distance * dataTable[j+1].emissionFactor * dataTable[j+1].days;
+            double emissionJ = userData[j].distance * userData[j].emissionFactor * userData[j].days;
+            double emissionJ1 = userData[j+1].distance * userData[j+1].emissionFactor * userData[j+1].days;
 
             if (criteria == 1) { // Sort by Age
-                if (dataTable[j].age > dataTable[j + 1].age) swapNeeded = true;
+                if (userData[j].age > userData[j + 1].age) swapNeeded = true;
             } 
             else if (criteria == 2) { // Sort by Daily Distance
-                if (dataTable[j].distance > dataTable[j + 1].distance) swapNeeded = true;
+                if (userData[j].distance > userData[j + 1].distance) swapNeeded = true;
             } 
             else if (criteria == 3) { // Sort by Carbon Emission
                 if (emissionJ > emissionJ1) swapNeeded = true;
@@ -160,9 +160,9 @@ void sortUserData(int criteria) {
 
             if (swapNeeded) {
                 // Manual swap since STL <utility> might be restricted
-                UserData temp = dataTable[j];
-                dataTable[j] = dataTable[j + 1];
-                dataTable[j + 1] = temp;
+                UserData temp = userData[j];
+                userData[j] = userData[j + 1];
+                userData[j + 1] = temp;
             }
         }
     }
@@ -181,8 +181,8 @@ void searchByTransport(std::string targetMode) {
     std::cout << "Residents using " << targetMode << ":" << std::endl;
     
     for (int i = 0; i < currentRow; i++) {
-        if (dataTable[i].transport == targetMode) {
-            std::cout << "ID: " << dataTable[i].id << " | Age: " << dataTable[i].age << std::endl;
+        if (userData[i].transport == targetMode) {
+            std::cout << "ID: " << userData[i].id << " | Age: " << userData[i].age << std::endl;
             found = true;
         }
     }
@@ -193,19 +193,19 @@ void searchByTransport(std::string targetMode) {
 void searchByDistance(int threshold) {
     std::cout << "Residents traveling more than " << threshold << " km:" << std::endl;
     for (int i = 0; i < currentRow; i++) {
-        if (dataTable[i].distance > threshold) {
-            std::cout << "ID: " << dataTable[i].id << " | Distance: " << dataTable[i].distance << " km" << std::endl;
+        if (userData[i].distance > threshold) {
+            std::cout << "ID: " << userData[i].id << " | Distance: " << userData[i].distance << " km" << std::endl;
         }
     }
 }
 
-// Prerequisite: dataTable must be sorted by Age
+// Prerequisite: userData must be sorted by Age
 int binarySearchAge(int targetAge) {
     int low = 0, high = currentRow - 1;
     while (low <= high) {
         int mid = low + (high - low) / 2;
-        if (dataTable[mid].age == targetAge) return mid;
-        if (dataTable[mid].age < targetAge) low = mid + 1;
+        if (userData[mid].age == targetAge) return mid;
+        if (userData[mid].age < targetAge) low = mid + 1;
         else high = mid - 1;
     }
     return -1; // Not found

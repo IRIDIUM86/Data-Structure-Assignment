@@ -11,12 +11,16 @@ int loadDataSet(std::string fileName) {
     // 2. Always check if the file actually opened
     if (!readingFile.is_open()) {
         std::cout << "File is missing or not found, please check the file directory!" << std::endl;
-        return 1;
+        return 0;
     }
 
     std::string line;
     // 3. Skip the CSV Header row (ID, Age, etc.)
     std::getline(readingFile, line);
+    
+    // Track the number of rows loaded
+    extern int currentRow;
+    int startRow = currentRow;
 
     while (std::getline(readingFile, line)) {
             std::stringstream ss(line);
@@ -40,5 +44,7 @@ int loadDataSet(std::string fileName) {
             addArray(id, age, mode, dist, factor, days);
     }
     readingFile.close();
-    return 0;
+    
+    // Return the number of rows added
+    return (currentRow - startRow);
 };

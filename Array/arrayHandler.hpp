@@ -18,6 +18,7 @@ const int maxColumns = 6;
 
 extern UserData userData[maxRows];
 extern int dataCount;
+extern int currentRow;
 
 void addArray(std::string id, int age, std::string transport, int distance, float emissionFactor, int days);
 void displayData();
