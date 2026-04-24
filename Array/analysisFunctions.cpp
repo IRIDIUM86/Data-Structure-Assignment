@@ -195,53 +195,49 @@ void displaySortMenu(int& size) {
 
 void displayDetailedInsight(int size) {
     
-    AgeGroupStats ageStats[5]; // [ageGroup]
+    // Create 2D array: [3 datasets][5 age groups]
+    AgeGroupStats datasetAgeStats[3][5];
     
-    // Initialize age stats
-    for (int i = 0; i < 5; i++) {
-        ageStats[i].residentCount = 0;
-        ageStats[i].totalEmissions = 0.0;
-        for (int j = 0; j < 6; j++) {
-            ageStats[i].transportCounts[j] = 0;
-            ageStats[i].emissionCounts[j] = 0.0;
-        }
-    }
-    
-    // Collect data
-    for (int i = 0; i < size; i++) {
-        int ageIdx = getGroupIndex(userData[i].age);
-        
-        if (ageIdx != -1) {
-            double emissions = userData[i].distance * userData[i].emissionFactor * userData[i].days;
-            ageStats[ageIdx].residentCount++;
-            ageStats[ageIdx].totalEmissions += emissions;
-            
-            // Track transport modes
-            if (userData[i].transport == "Car") {
-                ageStats[ageIdx].transportCounts[0]++;
-                ageStats[ageIdx].emissionCounts[0] += emissions;
-            } else if (userData[i].transport == "Bus") {
-                ageStats[ageIdx].transportCounts[1]++;
-                ageStats[ageIdx].emissionCounts[1] += emissions;
-            } else if (userData[i].transport == "Bicycle") {
-                ageStats[ageIdx].transportCounts[2]++;
-                ageStats[ageIdx].emissionCounts[2] += emissions;
-            } else if (userData[i].transport == "Walking") {
-                ageStats[ageIdx].transportCounts[3]++;
-                ageStats[ageIdx].emissionCounts[3] += emissions;
-            } else if (userData[i].transport == "School Bus") {
-                ageStats[ageIdx].transportCounts[4]++;
-                ageStats[ageIdx].emissionCounts[4] += emissions;
-            } else if (userData[i].transport == "Carpool") {
-                ageStats[ageIdx].transportCounts[5]++;
-                ageStats[ageIdx].emissionCounts[5] += emissions;
+    // Initialize all stats
+    for (int d = 0; d < 3; d++) {
+        for (int a = 0; a < 5; a++) {
+            datasetAgeStats[d][a].residentCount = 0;
+            datasetAgeStats[d][a].totalEmissions = 0.0;
+            for (int j = 0; j < 6; j++) {
+                datasetAgeStats[d][a].transportCounts[j] = 0;
+                datasetAgeStats[d][a].emissionCounts[j] = 0.0;
             }
         }
     }
     
-    // Display comparison table
-    std::cout << "\n========== COMPREHENSIVE EMISSIONS & TRANSPORT MODE ANALYSIS ==========" << std::endl;
+    // Collect and organize data by dataset and age group
+    for (int i = 0; i < size; i++) {
+        int ageIdx = getGroupIndex(userData[i].age);
+        int datasetId = userData[i].datasetId;
+        
+        if (ageIdx != -1 && datasetId >= 0 && datasetId < 3) {
+            double emissions = userData[i].distance * userData[i].emissionFactor * userData[i].days;
+            datasetAgeStats[datasetId][ageIdx].residentCount++;
+            datasetAgeStats[datasetId][ageIdx].totalEmissions += emissions;
+            
+            // Track transport modes
+            int transportIdx = -1;
+            if (userData[i].transport == "Car") transportIdx = 0;
+            else if (userData[i].transport == "Bus") transportIdx = 1;
+            else if (userData[i].transport == "Bicycle") transportIdx = 2;
+            else if (userData[i].transport == "Walking") transportIdx = 3;
+            else if (userData[i].transport == "School Bus") transportIdx = 4;
+            else if (userData[i].transport == "Carpool") transportIdx = 5;
+            
+            if (transportIdx != -1) {
+                datasetAgeStats[datasetId][ageIdx].transportCounts[transportIdx]++;
+                datasetAgeStats[datasetId][ageIdx].emissionCounts[transportIdx] += emissions;
+            }
+        }
+    }
     
+    std::string datasetNames[3] = {"CityA (Dataset 1)", "CityB (Dataset 2)", "CityC (Dataset 3)"};
+    std::string datasetShortNames[3] = {"CityA", "CityB", "CityC"};
     std::string ageGroupNames[5] = {
         "0-17 (Children & Teenagers)",
         "18-25 (University Students)",
@@ -250,181 +246,212 @@ void displayDetailedInsight(int size) {
         "61+ (Senior Citizens)"
     };
     
-    // Table 1: Total Emissions by Age Group
-    std::cout << "\n--- TABLE 1: TOTAL CARBON EMISSIONS (kg CO2) BY AGE GROUP ---" << std::endl;
-    std::cout << std::string(80, '-') << std::endl;
-    std::cout << "Age Group                          | Total Emissions | Resident Count | Avg per Resident" << std::endl;
-    std::cout << std::string(80, '-') << std::endl;
+    std::cout << "\n========== DATASET COMPARISON: CARBON EMISSIONS & MODE PREFERENCES ==========" << std::endl;
+    
+    // TABLE 1: Total Emissions by Dataset and Age Group
+    std::cout << "\n--- TABLE 1: TOTAL CARBON EMISSIONS (kg CO2) BY DATASET AND AGE GROUP ---" << std::endl;
+    std::cout << std::string(110, '-') << std::endl;
+    std::cout << "Age Group                            | CityA Dataset1 | CityB Dataset2 | CityC Dataset3 | Highest Contributor" << std::endl;
+    std::cout << std::string(110, '-') << std::endl;
     
     for (int age = 0; age < 5; age++) {
-        double avgPerResident = (ageStats[age].residentCount > 0) ? 
-            ageStats[age].totalEmissions / ageStats[age].residentCount : 0;
+        double cityAEmissions = datasetAgeStats[0][age].totalEmissions;
+        double cityBEmissions = datasetAgeStats[1][age].totalEmissions;
+        double cityCEmissions = datasetAgeStats[2][age].totalEmissions;
         
-        char buffer[120];
-        std::sprintf(buffer, "%-35s | %15.1f | %14d | %16.1f\n",
+        // Find highest contributor
+        std::string highestCity = "CityA";
+        double maxEmissions = cityAEmissions;
+        if (cityBEmissions > maxEmissions) {
+            highestCity = "CityB";
+            maxEmissions = cityBEmissions;
+        }
+        if (cityCEmissions > maxEmissions) {
+            highestCity = "CityC";
+            maxEmissions = cityCEmissions;
+        }
+        
+        std::string datasetSuffix = "";
+        if (highestCity == "CityA") datasetSuffix = " (Dataset 1)";
+        else if (highestCity == "CityB") datasetSuffix = " (Dataset 2)";
+        else datasetSuffix = " (Dataset 3)";
+        
+        char buffer[150];
+        std::sprintf(buffer, "%-35s | %14.1f | %14.1f | %14.1f | %s (%.1f kg CO2)\n",
             ageGroupNames[age].c_str(),
-            ageStats[age].totalEmissions,
-            ageStats[age].residentCount,
-            avgPerResident);
+            cityAEmissions,
+            cityBEmissions,
+            cityCEmissions,
+            (highestCity + datasetSuffix).c_str(),
+            maxEmissions);
         std::cout << buffer;
     }
-    std::cout << std::string(80, '-') << std::endl;
+    std::cout << std::string(110, '-') << std::endl;
     
-    // Table 2: Transport Mode Preferences by Age Group
-    std::cout << "\n--- TABLE 2: TRANSPORT MODE PREFERENCES BY AGE GROUP ---" << std::endl;
+    // TABLE 2: Transport Mode Preferences by Dataset and Age Group
+    std::cout << "\n--- TABLE 2: TRANSPORT MODE PREFERENCES BY DATASET AND AGE GROUP ---" << std::endl;
     std::cout << "(Count of residents using each transport mode)" << std::endl;
-    std::cout << std::string(100, '-') << std::endl;
+    std::cout << std::string(110, '-') << std::endl;
     
     for (int age = 0; age < 5; age++) {
         std::cout << "\nAge Group: " << ageGroupNames[age] << std::endl;
-        std::cout << std::string(100, '-') << std::endl;
-        std::cout << "Transport Mode      | Count | Emissions (kg CO2) | Avg Emission/Person | Preference" << std::endl;
-        std::cout << std::string(100, '-') << std::endl;
+        std::cout << std::string(110, '-') << std::endl;
+        std::cout << "Transport Mode      | CityA | CityB | CityC | Total | Most Preferred" << std::endl;
+        std::cout << std::string(110, '-') << std::endl;
         
         for (int mode = 0; mode < 6; mode++) {
-            int count = ageStats[age].transportCounts[mode];
-            double totalEmissions = ageStats[age].emissionCounts[mode];
-            double avgEmissionsPerPerson = (count > 0) ? totalEmissions / count : 0;
+            int cityACount = datasetAgeStats[0][age].transportCounts[mode];
+            int cityBCount = datasetAgeStats[1][age].transportCounts[mode];
+            int cityCCount = datasetAgeStats[2][age].transportCounts[mode];
+            int totalCount = cityACount + cityBCount + cityCCount;
             
-            // Determine if this is the most preferred mode
-            int maxCount = 0;
-            for (int m = 0; m < 6; m++) {
-                if (ageStats[age].transportCounts[m] > maxCount) {
-                    maxCount = ageStats[age].transportCounts[m];
+            // Find most preferred dataset for this transport mode
+            std::string mostPreferred = "N/A";
+            if (totalCount > 0) {
+                if (cityACount >= cityBCount && cityACount >= cityCCount && cityACount > 0) {
+                    mostPreferred = "CityA (Dataset 1)";
+                } else if (cityBCount >= cityACount && cityBCount >= cityCCount && cityBCount > 0) {
+                    mostPreferred = "CityB (Dataset 2)";
+                } else if (cityCCount > 0) {
+                    mostPreferred = "CityC (Dataset 3)";
                 }
             }
-            std::string preferenceMarker = (count == maxCount && count > 0) ? "★ MOST USED" : "";
             
-            char buffer[120];
-            std::sprintf(buffer, "%-20s | %5d | %18.1f | %19.1f | %s\n",
+            char buffer[150];
+            std::sprintf(buffer, "%-20s | %5d | %5d | %5d | %5d | %s\n",
                 modes[mode].c_str(),
-                count,
-                totalEmissions,
-                avgEmissionsPerPerson,
-                preferenceMarker.c_str());
+                cityACount,
+                cityBCount,
+                cityCCount,
+                totalCount,
+                mostPreferred.c_str());
             std::cout << buffer;
         }
-        std::cout << std::string(100, '-') << std::endl;
+        std::cout << std::string(110, '-') << std::endl;
     }
     
-    // Table 3: Bicycle vs Car Preference Analysis
+    // TABLE 3: Bicycle vs Car Preferences by Age Group
     std::cout << "\n--- TABLE 3: BICYCLE VS CAR PREFERENCES BY AGE GROUP ---" << std::endl;
     std::cout << std::string(110, '-') << std::endl;
-    std::cout << "Age Group                          | Bicycles | Cars | Preference | Car Emissions | Bicycle Emissions" << std::endl;
+    std::cout << "Age Group                       | Bicycles (A) | Bicycles (B) | Bicycles (C) | Cars (A) | Cars (B) | Cars (C) | Key Insight" << std::endl;
     std::cout << std::string(110, '-') << std::endl;
     
     for (int age = 0; age < 5; age++) {
-        int bicycles = ageStats[age].transportCounts[2];
-        int cars = ageStats[age].transportCounts[0];
-        double carEmissions = ageStats[age].emissionCounts[0];
-        double bicycleEmissions = ageStats[age].emissionCounts[2];
+        int bicyclesA = datasetAgeStats[0][age].transportCounts[2];
+        int bicyclesB = datasetAgeStats[1][age].transportCounts[2];
+        int bicyclesC = datasetAgeStats[2][age].transportCounts[2];
+        int carsA = datasetAgeStats[0][age].transportCounts[0];
+        int carsB = datasetAgeStats[1][age].transportCounts[0];
+        int carsC = datasetAgeStats[2][age].transportCounts[0];
         
-        std::string preference = "";
-        if (bicycles > cars) {
-            preference = "Prefers Bicycles";
-        } else if (cars > bicycles) {
-            preference = "Prefers Cars";
-        } else if (bicycles > 0 || cars > 0) {
-            preference = "Balanced";
-        } else {
-            preference = "No Data";
-        }
+        int totalBicycles = bicyclesA + bicyclesB + bicyclesC;
+        int totalCars = carsA + carsB + carsC;
         
-        char buffer[150];
-        std::sprintf(buffer, "%-35s | %8d | %5d | %-10s | %13.1f | %17.1f\n",
-            ageGroupNames[age].c_str(),
-            bicycles, cars,
-            preference.c_str(),
-            carEmissions,
-            bicycleEmissions);
-        std::cout << buffer;
-    }
-    std::cout << std::string(110, '-') << std::endl;
-    
-    // Table 4: Distance vs Emissions Correlation
-    std::cout << "\n--- TABLE 4: DISTANCE ANALYSIS BY AGE GROUP ---" << std::endl;
-    std::cout << std::string(90, '-') << std::endl;
-    std::cout << "Age Group                          | Avg Distance (km) | Total Distance (km)" << std::endl;
-    std::cout << std::string(90, '-') << std::endl;
-    
-    for (int age = 0; age < 5; age++) {
-        int totalDistance = 0;
-        int count = 0;
-        
-        for (int i = 0; i < size; i++) {
-            if (getGroupIndex(userData[i].age) == age) {
-                totalDistance += userData[i].distance;
-                count++;
+        std::string insight = "";
+        if (totalBicycles > 0 || totalCars > 0) {
+            if (totalBicycles > totalCars) {
+                insight = "Prefers Bicycles";
+            } else if (totalCars > totalBicycles) {
+                insight = "Prefers Cars";
+            } else {
+                insight = "Balanced";
             }
+        } else {
+            insight = "Balanced";
         }
         
-        double avgDistance = (count > 0) ? (double)totalDistance / count : 0;
-        
-        char buffer[120];
-        std::sprintf(buffer, "%-35s | %17.1f | %19d\n",
+        char buffer[180];
+        std::sprintf(buffer, "%-31s | %12d | %12d | %12d | %8d | %8d | %8d | %s\n",
             ageGroupNames[age].c_str(),
-            avgDistance,
-            totalDistance);
+            bicyclesA, bicyclesB, bicyclesC,
+            carsA, carsB, carsC,
+            insight.c_str());
         std::cout << buffer;
     }
-    std::cout << std::string(90, '-') << std::endl;
+    std::cout << std::string(110, '-') << std::endl;
     
-    // Summary Analysis
+    // ANALYSIS SUMMARY
     std::cout << "\n--- ANALYSIS SUMMARY ---" << std::endl;
-    
-    double totalEmissionsOverall = 0.0;
-    int totalResidentsOverall = 0;
-    for (int age = 0; age < 5; age++) {
-        totalEmissionsOverall += ageStats[age].totalEmissions;
-        totalResidentsOverall += ageStats[age].residentCount;
-    }
     
     std::cout << "\n1. HIGHEST EMISSION CONTRIBUTORS BY AGE GROUP:" << std::endl;
     for (int age = 0; age < 5; age++) {
-        int maxModeIdx = 0;
-        double maxEmissions = ageStats[age].emissionCounts[0];
-        for (int m = 1; m < 6; m++) {
-            if (ageStats[age].emissionCounts[m] > maxEmissions) {
-                maxEmissions = ageStats[age].emissionCounts[m];
-                maxModeIdx = m;
+        double maxEmissions = datasetAgeStats[0][age].totalEmissions;
+        std::string maxDataset = "CityA (Dataset 1)";
+        
+        for (int d = 1; d < 3; d++) {
+            if (datasetAgeStats[d][age].totalEmissions > maxEmissions) {
+                maxEmissions = datasetAgeStats[d][age].totalEmissions;
+                maxDataset = datasetNames[d];
             }
         }
-        std::cout << "   Age " << ageGroupNames[age] << ": " 
-                  << modes[maxModeIdx] << " with " << maxEmissions << " kg CO2" << std::endl;
+        
+        char buffer[150];
+        std::sprintf(buffer, "   Age %s: %s with %.2f kg CO2\n",
+            ageGroupNames[age].c_str(),
+            maxDataset.c_str(),
+            maxEmissions);
+        std::cout << buffer;
     }
     
     std::cout << "\n2. BICYCLE PREFERENCE BY AGE GROUP:" << std::endl;
     for (int age = 0; age < 5; age++) {
-        int bicycles = ageStats[age].transportCounts[2];
-        std::cout << "   Age " << ageGroupNames[age] << ": " 
-                  << bicycles << " cyclists" << std::endl;
+        int maxBicycles = 0;
+        std::string maxDataset = "CityA";
+        
+        for (int d = 0; d < 3; d++) {
+            if (datasetAgeStats[d][age].transportCounts[2] > maxBicycles) {
+                maxBicycles = datasetAgeStats[d][age].transportCounts[2];
+                maxDataset = datasetNames[d];
+            }
+        }
+        
+        char buffer[150];
+        std::sprintf(buffer, "   Age %s: Most cyclists in %s (%d cyclists)\n",
+            ageGroupNames[age].c_str(),
+            maxDataset.c_str(),
+            maxBicycles);
+        std::cout << buffer;
     }
     
     std::cout << "\n3. CAR USAGE BY AGE GROUP:" << std::endl;
     for (int age = 0; age < 5; age++) {
-        int cars = ageStats[age].transportCounts[0];
-        std::cout << "   Age " << ageGroupNames[age] << ": " 
-                  << cars << " car users" << std::endl;
+        int maxCars = 0;
+        std::string maxDataset = "CityA";
+        
+        for (int d = 0; d < 3; d++) {
+            if (datasetAgeStats[d][age].transportCounts[0] > maxCars) {
+                maxCars = datasetAgeStats[d][age].transportCounts[0];
+                maxDataset = datasetNames[d];
+            }
+        }
+        
+        char buffer[150];
+        std::sprintf(buffer, "   Age %s: Most car users in %s (%d car users)\n",
+            ageGroupNames[age].c_str(),
+            maxDataset.c_str(),
+            maxCars);
+        std::cout << buffer;
     }
     
     std::cout << "\n4. OVERALL DATASET STATISTICS:" << std::endl;
-    double avgEmissionsPerResident = (totalResidentsOverall > 0) ? totalEmissionsOverall / totalResidentsOverall : 0;
-    std::cout << "   Total Residents: " << totalResidentsOverall << std::endl;
-    std::cout << "   Total Emissions: " << totalEmissionsOverall << " kg CO2" << std::endl;
-    std::cout << "   Average Emissions per Resident: " << avgEmissionsPerResident << " kg CO2/resident" << std::endl;
-    
-    std::cout << "\n5. MOST USED TRANSPORT MODE BY AGE GROUP:" << std::endl;
-    for (int age = 0; age < 5; age++) {
-        int maxModeIdx = 0;
-        int maxCount = ageStats[age].transportCounts[0];
-        for (int m = 1; m < 6; m++) {
-            if (ageStats[age].transportCounts[m] > maxCount) {
-                maxCount = ageStats[age].transportCounts[m];
-                maxModeIdx = m;
-            }
+    for (int d = 0; d < 3; d++) {
+        int totalResidents = 0;
+        double totalEmissions = 0.0;
+        
+        for (int age = 0; age < 5; age++) {
+            totalResidents += datasetAgeStats[d][age].residentCount;
+            totalEmissions += datasetAgeStats[d][age].totalEmissions;
         }
-        std::cout << "   Age " << ageGroupNames[age] << ": " 
-                  << modes[maxModeIdx] << " (" << maxCount << " users)" << std::endl;
+        
+        double avgPerResident = (totalResidents > 0) ? totalEmissions / totalResidents : 0;
+        
+        char buffer[150];
+        std::sprintf(buffer, "   %s: %d residents, Total Emissions: %.2f kg CO2, Avg: %.4f kg CO2/resident\n",
+            datasetNames[d].c_str(),
+            totalResidents,
+            totalEmissions,
+            avgPerResident);
+        std::cout << buffer;
     }
     
     std::cout << "\n" << std::string(110, '=') << std::endl;

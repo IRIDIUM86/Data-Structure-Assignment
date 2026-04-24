@@ -11,6 +11,7 @@ struct UserData {
     float emissionFactor;
     int days;
     float emission;
+    int datasetId; // 0 = CityA, 1 = CityB, 2 = CityC
 };
 
 const int maxRows = 525;
@@ -20,7 +21,7 @@ extern UserData userData[maxRows];
 extern int dataCount;
 extern int currentRow;
 
-void addArray(std::string id, int age, std::string transport, int distance, float emissionFactor, int days);
+void addArray(std::string id, int age, std::string transport, int distance, float emissionFactor, int days, int datasetId = 0);
 void displayData();
 float totalEmission();
 void emissionByTransport();

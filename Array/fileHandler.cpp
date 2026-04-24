@@ -14,6 +14,16 @@ int loadDataSet(std::string fileName) {
         return 0;
     }
 
+    // Determine dataset ID based on filename
+    int datasetId = 0;
+    if (fileName.find("dataset1") != std::string::npos || fileName.find("cityA") != std::string::npos) {
+        datasetId = 0;
+    } else if (fileName.find("dataset2") != std::string::npos || fileName.find("cityB") != std::string::npos) {
+        datasetId = 1;
+    } else if (fileName.find("dataset3") != std::string::npos || fileName.find("cityC") != std::string::npos) {
+        datasetId = 2;
+    }
+
     std::string line;
     // 3. Skip the CSV Header row (ID, Age, etc.)
     std::getline(readingFile, line);
@@ -41,7 +51,7 @@ int loadDataSet(std::string fileName) {
             float factor = std::stof(factorStr);
             int days = std::stoi(daysStr);
 
-            addArray(id, age, mode, dist, factor, days);
+            addArray(id, age, mode, dist, factor, days, datasetId);
     }
     readingFile.close();
     

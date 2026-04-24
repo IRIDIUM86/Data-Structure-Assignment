@@ -8,7 +8,7 @@
 UserData userData[maxRows];
 int currentRow = 0;
 
-void addArray(std::string id, int age, std::string transport, int distance, float emissionFactor, int days){
+void addArray(std::string id, int age, std::string transport, int distance, float emissionFactor, int days, int datasetId){
     if (currentRow < maxRows) {
         userData[currentRow].id = id;
         userData[currentRow].age = age;
@@ -17,6 +17,7 @@ void addArray(std::string id, int age, std::string transport, int distance, floa
         userData[currentRow].emissionFactor = emissionFactor;
         userData[currentRow].days = days;
         userData[currentRow].emission = distance * emissionFactor * days;
+        userData[currentRow].datasetId = datasetId;
         currentRow++;
     } else {
         std::cerr << "Error: Maximum row limit reached!" << std::endl;
