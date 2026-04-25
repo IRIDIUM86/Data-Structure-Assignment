@@ -183,7 +183,7 @@ void searchByTransport(std::string targetMode) {
     
     for (int i = 0; i < currentRow; i++) {
         if (userData[i].transport == targetMode) {
-            std::cout << "ID: " << userData[i].id << " | Age: " << userData[i].age << std::endl;
+            std::cout << "ID: " << userData[i].id << " | Age: " << userData[i].age << " | Distance: " << userData[i].distance << " km"<< std::endl;
             found = true;
         }
     }
@@ -195,7 +195,7 @@ void searchByDistance(int threshold) {
     std::cout << "Residents traveling more than " << threshold << " km:" << std::endl;
     for (int i = 0; i < currentRow; i++) {
         if (userData[i].distance > threshold) {
-            std::cout << "ID: " << userData[i].id << " | Distance: " << userData[i].distance << " km" << std::endl;
+            std::cout << "ID: " << userData[i].id << " | Age: " << userData[i].age << " | Transport: " << userData[i].transport << std::endl;
         }
     }
 }
@@ -203,11 +203,30 @@ void searchByDistance(int threshold) {
 // Prerequisite: userData must be sorted by Age
 int binarySearchAge(int targetAge) {
     int low = 0, high = currentRow - 1;
+    int foundIndex = -1;
+    
+    // Binary search to find any occurrence of targetAge
     while (low <= high) {
         int mid = low + (high - low) / 2;
-        if (userData[mid].age == targetAge) return mid;
+        if (userData[mid].age == targetAge) {
+            foundIndex = mid;
+            break;
+        }
         if (userData[mid].age < targetAge) low = mid + 1;
         else high = mid - 1;
     }
+    
+    // If found, display all residents with the target age
+    if (foundIndex != -1) {
+        std::cout << "Residents with age " << targetAge << ":" << std::endl;
+        for (int i = 0; i < currentRow; i++) {
+            if (userData[i].age == targetAge) {
+                std::cout << "ID: " << userData[i].id << " | Transport: " << userData[i].transport 
+                          << " | Distance: " << userData[i].distance << " km" << std::endl;
+            }
+        }
+        return foundIndex;
+    }
+    
     return -1; // Not found
 }
