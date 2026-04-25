@@ -41,9 +41,15 @@ int main() {
             displaySummary(size);
         }
         else if (choice == 2) {
+            auto start = std::chrono::high_resolution_clock::now();
             displaySortMenu(size);
+            auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double> elapsed = end - start;
+            std::cout << "Sorting completed in " << elapsed.count() << " seconds." << std::endl;
+            getActualMemoryUsage();
         }
         else if (choice == 3) {
+            auto start = std::chrono::high_resolution_clock::now();
             std::cout << "\n--- SEARCH OPTIONS ---" << std::endl;
             std::cout << "\t 1. Search by Transport Mode" << std::endl;
             std::cout << "\t 2. Search by Distance Threshold" << std::endl;
@@ -72,6 +78,10 @@ int main() {
                 std::cin >> age;
                 binarySearchAge(age);
             }
+            auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double> elapsed = end - start;
+            std::cout << "Search completed in " << elapsed.count() << " seconds." << std::endl;
+            getActualMemoryUsage();
         }
         else if (choice == 4) {
             displayDetailedInsight(size);
