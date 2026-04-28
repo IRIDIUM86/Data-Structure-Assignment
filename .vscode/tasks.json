@@ -8,10 +8,12 @@
                 "-fdiagnostics-color=always",
                 "-g",
                 
-                "${fileDirname}\\arrayHandler.cpp",
-                "${fileDirname}\\analysisFunctions.cpp",
-                "${fileDirname}\\main.cpp",
-                "${fileDirname}\\fileHandler.cpp",
+                "${fileDirname}\\*.cpp",
+
+                // "${fileDirname}\\arrayHandler.cpp",
+                // "${fileDirname}\\analysisFunctions.cpp",
+                // "${fileDirname}\\main.cpp",
+                // "${fileDirname}\\fileHandler.cpp",
                 "-o",
                 "${fileDirname}\\Main.exe"
             ],

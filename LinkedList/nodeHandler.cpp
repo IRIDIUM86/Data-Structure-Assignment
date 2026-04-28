@@ -3,6 +3,7 @@
 #include <chrono>
 #include <limits>
 #include "nodeHelper.hpp"
+#include "generalFunctions.hpp"
 
 Residents* addResidents(Residents* head, std::string id, int age, std::string transport, int distance, float emissionFactor, int days, std::string ageGroup) {
 
@@ -145,6 +146,7 @@ Residents* searchMenu(Residents* head) {
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double, std::milli> duration = end - start;
         std::cout << "\nExecution Time: " << duration.count() << " ms" << std::endl;
+        printTransparencyReport(totalNodes, 1, "Linear Search by ID");
         
         if (!found) {
             std::cout << "Resident with ID '" << id << "' not found." << std::endl;
@@ -171,6 +173,7 @@ Residents* searchMenu(Residents* head) {
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double, std::milli> duration = end - start;
         std::cout << "\nExecution Time: " << duration.count() << " ms" << std::endl;
+        printTransparencyReport(totalNodes, 1, "Linear Search by Transport Mode");
 
         if (!found) {
             std::cout << "No residents found using '" << transport << "'." << std::endl;
@@ -214,6 +217,7 @@ Residents* searchMenu(Residents* head) {
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double, std::milli> duration = end - start;
         std::cout << "\nExecution Time: " << duration.count() << " ms" << std::endl;
+        printTransparencyReport(totalNodes, 1, "Linear Search by Age Group");
 
         if (!found) {
             std::cout << "No residents found in age group '" << ageGroup << "'." << std::endl;
@@ -247,6 +251,7 @@ Residents* searchMenu(Residents* head) {
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double, std::milli> duration = end - start;
         std::cout << "\nExecution Time: " << duration.count() << " ms" << std::endl;
+        printTransparencyReport(totalNodes, 1, "Linear Search by Carbon Emission");
 
         if (!found) {
             std::cout << "No residents found with carbon emission factor '" << emissionFactor << "'." << std::endl;
@@ -281,6 +286,7 @@ Residents* searchMenu(Residents* head) {
             auto end = std::chrono::high_resolution_clock::now();
             std::chrono::duration<double, std::milli> duration = end - start;
             std::cout << "\nExecution Time: " << duration.count() << " ms" << std::endl;
+            printTransparencyReport(totalNodes, 1, "Linear Search by Daily Distance");
 
             if (!found) {
                 std::cout << "No residents found with daily distance '" << dailyDistance << "'." << std::endl;
@@ -290,6 +296,9 @@ Residents* searchMenu(Residents* head) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
+    } 
+    else if (choiceSearch == 6) {
+        return head;
     } else {
         std::cout << "Invalid choice, please enter a valid option." << std::endl;
     }
