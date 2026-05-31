@@ -1,48 +1,72 @@
-#include <iostream>
-# define MAX 100
+#include "Robot.h"
+#include <iomanip>
 
-class Robot {
-    private:
-        int top;
-        int stack[MAX];
-    public:
-    Robot() { 
-        top = -1; // Initialize stack as empty
+Robot::Robot()
+{
+    top    = -1;
+    robotID = "Unassigned";
+    status  = "Available";
+}
+
+Robot::Robot(string id)
+{
+    top     = -1;
+    robotID = id;
+    status  = "Available";
+}
+
+bool Robot::push(int x)
+{
+    if (top >= (MAX - 1))
+    {
+        cout << "Stack Overflow! Cannot push " << x << "\n";
+        return false;
     }
-    bool push(int x) {
-        if (top >= (MAX - 1)) {
-            std::cout << "Stack Overflow! Cannot push " << x << "\n";
-            return false;
-        } else {
-            stack[++top] = x;
-            std::cout << x << " pushed into stack\n";
-            return true;
-        }
+    stack[++top] = x;
+    cout << "Movement command " << x << " pushed to " << robotID << "\n";
+    return true;
+}
+
+int Robot::pop()
+{
+    if (top < 0)
+    {
+        cout << "Stack Underflow! No commands for " << robotID << "\n";
+        return -1;
+    }
+    return stack[top--];
+}
+
+int Robot::peek()
+{
+    if (top < 0)
+    {
+        cout << "No commands in stack for " << robotID << "\n";
+        return -1;
+    }
+    return stack[top];
+}
+
+bool Robot::isEmpty()
+{
+    return top < 0;
+}
+
+void Robot::displayStack()
+{
+    if (top < 0)
+    {
+        cout << robotID << " has no movement commands.\n";
+        return;
     }
 
-    // Remove and return the top element
-    int pop() {
-        if (top < 0) {
-            std::cout << "Stack Underflow! Nothing to pop.\n";
-            return 0; // Returning 0 as a default error indicator
-        } else {
-            int x = stack[top--];
-            return x;
-        }
-    }
+    cout << "\n=====================================================\n";
+    cout << "Robot : " << robotID << " | Status: " << status << "\n";
+    cout << "Movement Command Stack (top to bottom):\n";
+    cout << "=====================================================\n";
 
-    // Return the top element without removing it
-    int peek() {
-        if (top < 0) {
-            std::cout << "Stack is Empty\n";
-            return 0;
-        } else {
-            return stack[top];
-        }
-    }
+    for (int i = top; i >= 0; i--)
+        cout << "  [" << i << "] Command: " << stack[i] << "\n";
 
-    // Check if the stack is empty
-    bool isEmpty() {
-        return (top < 0);
-    }
-};
+    cout << "=====================================================\n";
+}
