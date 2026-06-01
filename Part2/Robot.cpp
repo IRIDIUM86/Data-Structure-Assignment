@@ -6,6 +6,9 @@ Robot::Robot()
     top    = -1;
     robotID = "Unassigned";
     status  = "Available";
+    currentPos = {3, 7};
+    targetPos = {-1, -1};
+    assignedLocation = "";
 }
 
 Robot::Robot(string id)
@@ -13,17 +16,18 @@ Robot::Robot(string id)
     top     = -1;
     robotID = id;
     status  = "Available";
+    currentPos = {3, 7};
+    targetPos = {-1, -1};
+    assignedLocation = "";
 }
 
 bool Robot::push(int x)
 {
     if (top >= (MAX - 1))
     {
-        cout << "Stack Overflow! Cannot push " << x << "\n";
         return false;
     }
     stack[++top] = x;
-    cout << "Movement command " << x << " pushed to " << robotID << "\n";
     return true;
 }
 
@@ -31,7 +35,6 @@ int Robot::pop()
 {
     if (top < 0)
     {
-        cout << "Stack Underflow! No commands for " << robotID << "\n";
         return -1;
     }
     return stack[top--];
@@ -41,7 +44,6 @@ int Robot::peek()
 {
     if (top < 0)
     {
-        cout << "No commands in stack for " << robotID << "\n";
         return -1;
     }
     return stack[top];
@@ -64,9 +66,42 @@ void Robot::displayStack()
     cout << "Robot : " << robotID << " | Status: " << status << "\n";
     cout << "Movement Command Stack (top to bottom):\n";
     cout << "=====================================================\n";
+    cout << "Legend: 1=UP, 2=DOWN, 3=LEFT, 4=RIGHT\n";
+    cout << "-----------------------------------------------------\n";
 
     for (int i = top; i >= 0; i--)
-        cout << "  [" << i << "] Command: " << stack[i] << "\n";
+    {
+        string direction;
+        switch(stack[i])
+        {
+            case 1: direction = "UP"; break;
+            case 2: direction = "DOWN"; break;
+            case 3: direction = "LEFT"; break;
+            case 4: direction = "RIGHT"; break;
+            default: direction = "UNKNOWN"; break;
+        }
+        cout << "  [" << i << "] Command: " << stack[i] << " (" << direction << ")\n";
+    }
 
     cout << "=====================================================\n";
+}
+
+void Robot::setCurrentPos(Position pos)
+{
+    currentPos = pos;
+}
+
+void Robot::setTargetPos(Position pos)
+{
+    targetPos = pos;
+}
+
+Position Robot::getCurrentPos()
+{
+    return currentPos;
+}
+
+Position Robot::getTargetPos()
+{
+    return targetPos;
 }
