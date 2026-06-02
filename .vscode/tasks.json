@@ -10,10 +10,12 @@
                 
                 "${fileDirname}\\*.cpp",
 
-                // "${fileDirname}\\arrayHandler.cpp",
-                // "${fileDirname}\\analysisFunctions.cpp",
+                // "${fileDirname}\\ItemBST.cpp",
+                // "${fileDirname}\\OrderQueue.cpp",
                 // "${fileDirname}\\main.cpp",
-                // "${fileDirname}\\fileHandler.cpp",
+                // "${fileDirname}\\Robot.cpp",
+                // "${fileDirname}\\RobotQueue.cpp",
+                //"${fileDirname}\\SubMenu.cpp",
                 "-o",
                 "${fileDirname}\\Main.exe"
             ],

@@ -1,9 +1,6 @@
 #include "ItemBST.h"
 #include <iomanip>
 
-// ============================================================
-// Constructor / Destructor
-// ============================================================
 ItemBST::ItemBST()
 {
     root = NULL;
@@ -24,9 +21,6 @@ void ItemBST::destroyTree(BSTNode* node)
     delete node;
 }
 
-// ============================================================
-// isEmpty / count
-// ============================================================
 bool ItemBST::isEmpty()
 {
     return root == NULL;
@@ -45,9 +39,6 @@ int ItemBST::countNodes(BSTNode* node)
     return 1 + countNodes(node->left) + countNodes(node->right);
 }
 
-// ============================================================
-// INSERT - ordered by itemID (ascending)
-// ============================================================
 void ItemBST::insert(Item item)
 {
     root = insert(root, item);
@@ -55,7 +46,7 @@ void ItemBST::insert(Item item)
 
 BSTNode* ItemBST::insert(BSTNode* node, Item item)
 {
-    // Base case: empty spot found, create new node
+    
     if (node == NULL)
     {
         BSTNode* newNode = new BSTNode;
@@ -65,7 +56,6 @@ BSTNode* ItemBST::insert(BSTNode* node, Item item)
         return newNode;
     }
 
-    // BST ordering by itemID
     if (item.itemID < node->data.itemID)
         node->left = insert(node->left, item);
     else if (item.itemID > node->data.itemID)
@@ -76,9 +66,6 @@ BSTNode* ItemBST::insert(BSTNode* node, Item item)
     return node;
 }
 
-// ============================================================
-// DELETE - removes a node by itemID, restructures tree
-// ============================================================
 void ItemBST::deleteItem(string itemID)
 {
     if (isEmpty())
@@ -87,7 +74,6 @@ void ItemBST::deleteItem(string itemID)
         return;
     }
 
-    // Check if item exists first
     BSTNode* found = searchByID(root, itemID);
 
     if (found == NULL)
@@ -119,13 +105,11 @@ BSTNode* ItemBST::deleteNode(BSTNode* node, string itemID)
         node->right = deleteNode(node->right, itemID);
     else
     {
-        // Case 1: Leaf node
         if (node->left == NULL && node->right == NULL)
         {
             delete node;
             return NULL;
         }
-        // Case 2: One child
         else if (node->left == NULL)
         {
             BSTNode* temp = node->right;
@@ -138,7 +122,6 @@ BSTNode* ItemBST::deleteNode(BSTNode* node, string itemID)
             delete node;
             return temp;
         }
-        // Case 3: Two children - replace with in-order successor
         else
         {
             BSTNode* successor  = findMin(node->right);
@@ -150,9 +133,6 @@ BSTNode* ItemBST::deleteNode(BSTNode* node, string itemID)
     return node;
 }
 
-// ============================================================
-// SEARCH BY ID
-// ============================================================
 void ItemBST::searchByID(string itemID)
 {
     BSTNode* result = searchByID(root, itemID);
@@ -183,20 +163,15 @@ void ItemBST::searchByID(string itemID)
 
 BSTNode* ItemBST::searchByID(BSTNode* node, string itemID)
 {
-    // Base case: not found or exact match
     if (node == NULL || node->data.itemID == itemID)
         return node;
 
-    // BST property: go left or right
     if (itemID < node->data.itemID)
         return searchByID(node->left, itemID);
     else
         return searchByID(node->right, itemID);
 }
 
-// ============================================================
-// SEARCH BY NAME (partial match, case-sensitive)
-// ============================================================
 void ItemBST::searchByName(string name)
 {
     if (isEmpty())
@@ -232,13 +207,11 @@ void ItemBST::searchByName(string name)
 
 void ItemBST::searchByName(BSTNode* node, string name, bool& found)
 {
-    // Full tree traversal (in-order) — name has no BST ordering
     if (node == NULL)
         return;
 
     searchByName(node->left, name, found);
 
-    // Partial match check
     if (node->data.itemName.find(name) != string::npos)
     {
         cout << left
@@ -256,9 +229,6 @@ void ItemBST::searchByName(BSTNode* node, string name, bool& found)
     searchByName(node->right, name, found);
 }
 
-// ============================================================
-// SEARCH BY CATEGORY
-// ============================================================
 void ItemBST::searchByCategory(string category)
 {
     if (isEmpty())
@@ -314,9 +284,6 @@ void ItemBST::searchByCategory(BSTNode* node, string category, bool& found)
     searchByCategory(node->right, category, found);
 }
 
-// ============================================================
-// DISPLAY ALL (in-order traversal = sorted by itemID)
-// ============================================================
 void ItemBST::displayAll()
 {
     if (isEmpty())
@@ -365,9 +332,6 @@ void ItemBST::inOrder(BSTNode* node)
     inOrder(node->right);
 }
 
-// ============================================================
-// DISPLAY TREE STRUCTURE (visual, for demonstration)
-// ============================================================
 void ItemBST::displayTree()
 {
     if (isEmpty())
@@ -396,9 +360,6 @@ void ItemBST::displayTree(BSTNode* node, string prefix, bool isLeft)
     displayTree(node->right, prefix + (isLeft ? "|   " : "    "), false);
 }
 
-// ============================================================
-// UPDATE QUANTITY
-// ============================================================
 void ItemBST::updateQuantity(string itemID, int newQty)
 {
     BSTNode* result = searchByID(root, itemID);
@@ -422,12 +383,6 @@ void ItemBST::updateQuantity(string itemID, int newQty)
     cout << "=====================================================\n";
 }
 
-// ============================================================
-// LOAD FROM CSV
-// Reads the shared warehouse_data.csv
-// Extracts: ItemID, ItemName, Category, Zone, Aisle, Shelf, Qty
-// Skips duplicate ItemIDs (same item may appear in multiple orders)
-// ============================================================
 void loadItemsFromCSV(ItemBST& tree, const string& filename)
 {
     ifstream file(filename);
@@ -440,41 +395,37 @@ void loadItemsFromCSV(ItemBST& tree, const string& filename)
 
     string line;
 
-    // Skip header row
     getline(file, line);
 
     int loaded = 0;
 
     while (getline(file, line))
     {
-        // Strip Windows carriage return if present
         if (!line.empty() && line.back() == '\r')
             line.pop_back();
 
         stringstream ss(line);
         Item item;
         string quantityStr;
-        string robotID;   // read but not stored in Item
-        string status;    // read but not stored in Item
+        string robotID;   
+        string status;    
 
-        getline(ss, item.itemID,    ','); // col 1: OrderID  — skip, reuse as key?
-        // CSV columns: OrderID, ItemID, ItemName, Category, Qty, Zone, Aisle, Shelf, RobotID, Status
-        // We already read col1 into itemID above — fix column order:
-        string orderID = item.itemID;    // that was actually OrderID
+        getline(ss, item.itemID,    ','); 
 
-        getline(ss, item.itemID,    ','); // col 2: ItemID
-        getline(ss, item.itemName,  ','); // col 3: ItemName
-        getline(ss, item.category,  ','); // col 4: Category
-        getline(ss, quantityStr,    ','); // col 5: Quantity
-        getline(ss, item.zone,      ','); // col 6: Zone
-        getline(ss, item.aisle,     ','); // col 7: Aisle
-        getline(ss, item.shelf,     ','); // col 8: Shelf
-        getline(ss, robotID,        ','); // col 9: RobotID (ignored)
-        getline(ss, status,         ','); // col 10: Status (ignored)
+        string orderID = item.itemID;    
+
+        getline(ss, item.itemID,    ',');
+        getline(ss, item.itemName,  ','); 
+        getline(ss, item.category,  ','); 
+        getline(ss, quantityStr,    ','); 
+        getline(ss, item.zone,      ','); 
+        getline(ss, item.aisle,     ','); 
+        getline(ss, item.shelf,     ','); 
+        getline(ss, robotID,        ','); 
+        getline(ss, status,         ','); 
 
         item.quantity = stoi(quantityStr);
 
-        // Insert into BST — insert() handles duplicate itemIDs silently
         tree.insert(item);
         loaded++;
     }

@@ -8,9 +8,6 @@
 
 using namespace std;
 
-// ============================================================
-// Item struct - stores all item details loaded from CSV
-// ============================================================
 struct Item
 {
     string itemID;
@@ -22,10 +19,6 @@ struct Item
     int    quantity;
 };
 
-// ============================================================
-// BSTNode - each node in the Binary Search Tree
-// Ordered by itemID (string comparison)
-// ============================================================
 struct BSTNode
 {
     Item    data;
@@ -33,17 +26,11 @@ struct BSTNode
     BSTNode* right;
 };
 
-// ============================================================
-// ItemBST class - Binary Search Tree for item management
-// ============================================================
 class ItemBST
 {
 private:
     BSTNode* root;
 
-    // --------------------------------------------------------
-    // Private helpers (recursive)
-    // --------------------------------------------------------
     BSTNode* insert(BSTNode* node, Item item);
     BSTNode* findMin(BSTNode* node);
     BSTNode* deleteNode(BSTNode* node, string itemID);
