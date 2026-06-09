@@ -14,7 +14,7 @@ LocationCoord locationMap[] = {
     {"a1", 2, 5}, {"a2", 3, 5}, {"a3", 4, 5}, {"a4", 5, 5}, {"a5", 6, 5},
     {"b1", 2, 3}, {"b2", 3, 3}, {"b3", 4, 3}, {"b4", 5, 3}, {"b5", 6, 3},
     {"c1", 2, 1}, {"c2", 3, 1}, {"c3", 4, 1}, {"c4", 5, 1}, {"c5", 6, 1},
-    {"s",  3, 7}
+    {"s",  4, 7}
 };
 
 RobotQueue::RobotQueue()
@@ -134,7 +134,7 @@ void RobotQueue::printWarehouseMap()
     cout << "\n=====================================================\n";
     cout << "WAREHOUSE MAP (Coordinates: X=Column, Y=Row)\n";
     cout << "=====================================================\n";
-    cout << "Starting Position (S): X=3, Y=7\n";
+    cout << "Starting Position (S): X=4, Y=7\n";
     cout << "Shelves:\n";
     cout << "  Zone A (Y=5): a1(X=2), a2(X=3), a3(X=4), a4(X=5), a5(X=6)\n";
     cout << "  Zone B (Y=3): b1(X=2), b2(X=3), b3(X=4), b4(X=5), b5(X=6)\n";
@@ -286,7 +286,7 @@ bool RobotQueue::generatePathForRobot(Robot& robot, Order& order)
         return false;
     }
     
-    int startX = 3, startY = 7; // Starting at 's'
+    int startX = 4, startY = 7; // Starting at 's'
     
     robot.setCurrentPos({startX, startY});
     robot.setTargetPos({targetX, targetY});
@@ -299,7 +299,7 @@ bool RobotQueue::generatePathForRobot(Robot& robot, Order& order)
     }
     
     cout << "\n" << robot.robotID << " - Path calculated successfully!\n";
-    cout << "From (X=" << startX << ", Y=" << startY << ") → (X=" << targetX 
+    cout << "From (X=" << startX << ", Y=" << startY << ") to (X=" << targetX 
          << ", Y=" << targetY << ")\n";
     
     return true;
@@ -307,7 +307,7 @@ bool RobotQueue::generatePathForRobot(Robot& robot, Order& order)
 
 void RobotQueue::executeRobotMovement(Robot& robot, Order& order)
 {
-    int startX = 3, startY = 7;
+    int startX = 4, startY = 7;
     int currentX = startX, currentY = startY;
     
     // Create a stack to remember the return moves
