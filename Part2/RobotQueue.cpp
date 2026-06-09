@@ -193,7 +193,6 @@ bool RobotQueue::isWall(int x, int y)
 
 bool RobotQueue::bfsPathfinding(int startX, int startY, int targetX, int targetY, Robot& robot)
 {
-    // Array-based BFS without STL queue or vector
     struct PathNode
     {
         int x, y;
@@ -241,8 +240,21 @@ bool RobotQueue::bfsPathfinding(int startX, int startY, int targetX, int targetY
             int newX = current.x + dx[i];
             int newY = current.y + dy[i];
             
+            // Check if out of bounds or a hard wall first
             if (!isWall(newX, newY) && !visited[newY][newX])
             {
+                // Define where the shelves are physically located based on your layout
+                // Shelves are at X: 2 to 6, and Y: 1, 3, or 5
+                bool isShelf = (newX >= 2 && newX <= 6) && (newY == 1 || newY == 3 || newY == 5);
+                
+                // Check if this specific cell is our final destination
+                bool isTarget = (newX == targetX && newY == targetY);
+                
+                if (isShelf && !isTarget)
+                {
+                    continue; // Skip this move, it goes through a shelf!
+                }
+                
                 visited[newY][newX] = true;
                 
                 // Create new path node
@@ -298,11 +310,14 @@ void RobotQueue::executeRobotMovement(Robot& robot, Order& order)
     int startX = 3, startY = 7;
     int currentX = startX, currentY = startY;
     
+    // Create a stack to remember the return moves
+    Robot historyStack = Robot(robot.robotID);
+    
     cout << "\n=====================================================\n";
     cout << "EXECUTION LOG - " << robot.robotID << " (Order: " << order.orderID << ")\n";
     cout << "=====================================================\n";
     
-    // Execute path to target
+    // --- FORWARD JOURNEY ---
     while (!robot.isEmpty())
     {
         int cmd = robot.pop();
@@ -312,18 +327,22 @@ void RobotQueue::executeRobotMovement(Robot& robot, Order& order)
             case 1: // UP
                 currentY--;
                 cout << robot.robotID << " goes up\n";
+                historyStack.push(2); // Opposite is DOWN
                 break;
             case 2: // DOWN
                 currentY++;
                 cout << robot.robotID << " goes down\n";
+                historyStack.push(1); // Opposite is UP
                 break;
             case 3: // LEFT
                 currentX--;
                 cout << robot.robotID << " goes left\n";
+                historyStack.push(4); // Opposite is RIGHT
                 break;
             case 4: // RIGHT
                 currentX++;
                 cout << robot.robotID << " goes right\n";
+                historyStack.push(3); // Opposite is LEFT
                 break;
         }
     }
@@ -331,37 +350,29 @@ void RobotQueue::executeRobotMovement(Robot& robot, Order& order)
     // At target location
     cout << robot.robotID << " put the item\n";
     
-    // Generate return path
-    int targetX = currentX, targetY = currentY;
-    Robot returnRobot = Robot(robot.robotID);
-    returnRobot.status = robot.status;
-    returnRobot.assignedLocation = robot.assignedLocation;
-    
-    if (bfsPathfinding(targetX, targetY, startX, startY, returnRobot))
+    // --- RETURN JOURNEY (EXACT REVERSE USING LIFO) ---
+    while (!historyStack.isEmpty())
     {
-        while (!returnRobot.isEmpty())
+        int cmd = historyStack.pop();
+        
+        switch (cmd)
         {
-            int cmd = returnRobot.pop();
-            
-            switch (cmd)
-            {
-                case 1: // UP
-                    currentY--;
-                    cout << robot.robotID << " goes up\n";
-                    break;
-                case 2: // DOWN
-                    currentY++;
-                    cout << robot.robotID << " goes down\n";
-                    break;
-                case 3: // LEFT
-                    currentX--;
-                    cout << robot.robotID << " goes left\n";
-                    break;
-                case 4: // RIGHT
-                    currentX++;
-                    cout << robot.robotID << " goes right\n";
-                    break;
-            }
+            case 1: // UP
+                currentY--;
+                cout << robot.robotID << " goes up (return)\n";
+                break;
+            case 2: // DOWN
+                currentY++;
+                cout << robot.robotID << " goes down (return)\n";
+                break;
+            case 3: // LEFT
+                currentX--;
+                cout << robot.robotID << " goes left (return)\n";
+                break;
+            case 4: // RIGHT
+                currentX++;
+                cout << robot.robotID << " goes right (return)\n";
+                break;
         }
     }
     
